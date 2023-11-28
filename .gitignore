@@ -184,3 +184,4 @@ $RECYCLE.BIN/
 /_output
 *.idea/**/vcs.xml
 /.idea/.gitignore
+/.idea/codeStyles/codeStyleConfig.xml
