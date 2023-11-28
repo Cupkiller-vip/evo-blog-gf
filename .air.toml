@@ -11,7 +11,7 @@ cmd = "make"
 # Binary file yields from `cmd`.
 bin = "_output/evo-blog-gf"
 # Customize binary, can setup environment variables when run your app.
-full_bin = "APP_ENV=dev APP_USER=air ./_output/miniblog"
+full_bin = "APP_ENV=dev APP_USER=air ./_output/evo-blog-gf"
 # Watch these filename extensions.
 include_ext = ["go", "tpl", "tmpl", "html"]
 # Ignore these filename extensions or directories.
