@@ -24,7 +24,6 @@ func GetBlogCommand() *cobra.Command {
 					return fmt.Errorf("%q does not take any arguments, got %q", cmd.CommandPath(), args)
 				}
 			}
-
 			return nil
 		},
 	}
