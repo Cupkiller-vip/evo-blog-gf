@@ -9,7 +9,7 @@ tmp_dir = "tmp"
 # Just plain old shell command. You could use `make` as well.
 cmd = "make"
 # Binary file yields from `cmd`.
-bin = "_output/miniblog"
+bin = "_output/evo-blog-gf"
 # Customize binary, can setup environment variables when run your app.
 full_bin = "APP_ENV=dev APP_USER=air ./_output/miniblog"
 # Watch these filename extensions.
