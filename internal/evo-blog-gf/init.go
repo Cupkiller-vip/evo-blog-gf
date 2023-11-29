@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	defaultConfigName  = "evo-blog-gf.yaml.yaml"
+	defaultConfigName  = "evo-blog-gf.yaml"
 	recommendedHomeDir = "evo-blog-bf"
 )
 
