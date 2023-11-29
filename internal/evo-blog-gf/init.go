@@ -1,7 +1,7 @@
 package evo_blog_gf
 
 import (
-	"fmt"
+	"evo-blog-gf/internal/log"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"os"
@@ -26,13 +26,17 @@ func initConfig() {
 	}
 	viper.AutomaticEnv()
 	if err := viper.ReadInConfig(); err != nil {
-		_, err := fmt.Fprintln(os.Stderr, err)
-		if err != nil {
-			return
-		}
+		log.Errorw("Failed to read viper configuration file", "err", err)
 	}
-	_, err := fmt.Fprintln(os.Stdout, "Using config file:", viper.ConfigFileUsed())
-	if err != nil {
-		return
+	log.Infow("Using config file", "file", viper.ConfigFileUsed())
+}
+
+func logOptions() *log.Options {
+	return &log.Options{
+		DisableCaller:     viper.GetBool("log.disableCaller"),
+		DisableStacktrace: viper.GetBool("log.disableStacktrace"),
+		Level:             viper.GetString("log.level"),
+		Format:            viper.GetString("log.format"),
+		OutputPaths:       viper.GetStringSlice("log.outputPaths"),
 	}
 }

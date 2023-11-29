@@ -7,3 +7,10 @@ db:
   max-open-connections: 100
   max-connection-life-time: 10s
   log-level: 4
+
+log:
+  disableCaller: false
+  disableStacktrace: false
+  level: debug
+  format: console
+  outputPath: [ /tmp/evo-blog-gf.log, stdout ]

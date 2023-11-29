@@ -2,6 +2,7 @@ package evo_blog_gf
 
 import (
 	"encoding/json"
+	"evo-blog-gf/internal/log"
 	"fmt"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -19,6 +20,8 @@ func GetBlogCommand() *cobra.Command {
 		SilenceUsage: true,
 		// 指定调用 cmd.Execute() 时，执行的 Run 函数，函数执行失败会返回错误信息
 		RunE: func(cmd *cobra.Command, args []string) error {
+			log.Init(logOptions())
+			defer log.Sync()
 			return run()
 		},
 		// 这里设置命令运行时，不需要指定命令行参数
@@ -39,7 +42,7 @@ func GetBlogCommand() *cobra.Command {
 
 func run() error {
 	settings, _ := json.Marshal(viper.AllSettings())
-	fmt.Println(string(settings))
-	fmt.Println(viper.GetString("db.username"))
+	log.Infow(string(settings))
+	log.Infow(viper.GetString("db.username"))
 	return nil
 }
