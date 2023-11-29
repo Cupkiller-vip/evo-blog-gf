@@ -10,7 +10,7 @@ import (
 
 const (
 	defaultConfigName  = "evo-blog-gf.yaml"
-	recommendedHomeDir = "evo-blog-bf"
+	recommendedHomeDir = "evo-blog-gf/configs"
 )
 
 func initConfig() {
