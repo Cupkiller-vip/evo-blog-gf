@@ -2,11 +2,14 @@ package evo_blog_gf
 
 import (
 	"encoding/json"
+	"errors"
 	"evo-blog-gf/internal/log"
 	"evo-blog-gf/pkg/version"
 	"fmt"
+	"github.com/gin-gonic/gin"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"net/http"
 )
 
 var cfgFile string
@@ -47,5 +50,18 @@ func run() error {
 	settings, _ := json.Marshal(viper.AllSettings())
 	log.Infow(string(settings))
 	log.Infow(viper.GetString("db.username"))
+	gin.SetMode(viper.GetString("runMode"))
+	g := gin.New()
+	g.NoRoute(func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{"code": 10003, "message": "Page not found."})
+	})
+	g.GET("/healthz", func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{"status": "ok"})
+	})
+	httpsrv := &http.Server{Addr: viper.GetString("addr"), Handler: g}
+	log.Infow("Start to listening the incoming requests on http address", "addr", viper.GetString("addr"))
+	if err := httpsrv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
+		log.Fatalw(err.Error())
+	}
 	return nil
 }
