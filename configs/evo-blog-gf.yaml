@@ -13,4 +13,4 @@ log:
   disableStacktrace: false
   level: debug
   format: console
-  outputPath: [ /tmp/evo-blog-gf.log, stdout ]
+  outputPaths: [ /tmp/evo-blog-gf.log, stdout ]
