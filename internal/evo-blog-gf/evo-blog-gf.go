@@ -3,6 +3,7 @@ package evo_blog_gf
 import (
 	"encoding/json"
 	"evo-blog-gf/internal/log"
+	"evo-blog-gf/pkg/version"
 	"fmt"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -20,6 +21,7 @@ func GetBlogCommand() *cobra.Command {
 		SilenceUsage: true,
 		// 指定调用 cmd.Execute() 时，执行的 Run 函数，函数执行失败会返回错误信息
 		RunE: func(cmd *cobra.Command, args []string) error {
+			version.PrintAndExitIfRequested()
 			log.Init(logOptions())
 			defer log.Sync()
 			return run()
@@ -37,6 +39,7 @@ func GetBlogCommand() *cobra.Command {
 	cobra.OnInitialize(initConfig)
 	cmd.PersistentFlags().StringVarP(&cfgFile, "config", "c", "", "The path to the blog configuration file. Empty string for no configuration file.")
 	cmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	version.AddFlags(cmd.PersistentFlags())
 	return cmd
 }
 
