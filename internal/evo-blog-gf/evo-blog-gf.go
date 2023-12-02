@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"evo-blog-gf/internal/log"
+	"evo-blog-gf/internal/middleware"
 	"evo-blog-gf/pkg/version"
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -52,10 +53,12 @@ func run() error {
 	log.Infow(viper.GetString("db.username"))
 	gin.SetMode(viper.GetString("runMode"))
 	g := gin.New()
+	g.Use(middleware.RequestId())
 	g.NoRoute(func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"code": 10003, "message": "Page not found."})
 	})
 	g.GET("/healthz", func(c *gin.Context) {
+		log.C(c).Infow("Healthz function called")
 		c.JSON(http.StatusOK, gin.H{"status": "ok"})
 	})
 	httpsrv := &http.Server{Addr: viper.GetString("addr"), Handler: g}
