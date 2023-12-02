@@ -1,6 +1,7 @@
 package evo_blog_gf
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"evo-blog-gf/internal/log"
@@ -12,6 +13,10 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
 )
 
 var cfgFile string
@@ -52,6 +57,7 @@ func run() error {
 	settings, _ := json.Marshal(viper.AllSettings())
 	log.Infow(string(settings))
 	log.Infow(viper.GetString("db.username"))
+
 	gin.SetMode(viper.GetString("runMode"))
 	g := gin.New()
 	g.Use(cors.Default())
@@ -63,10 +69,29 @@ func run() error {
 		log.C(c).Infow("Healthz function called")
 		c.JSON(http.StatusOK, gin.H{"status": "ok"})
 	})
+
 	httpsrv := &http.Server{Addr: viper.GetString("addr"), Handler: g}
 	log.Infow("Start to listening the incoming requests on http address", "addr", viper.GetString("addr"))
-	if err := httpsrv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
-		log.Fatalw(err.Error())
+
+	go func() {
+		if err := httpsrv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
+			log.Fatalw(err.Error())
+		}
+	}()
+
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+	<-quit
+	log.Infow("Shutting down server...")
+
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	if err := httpsrv.Shutdown(ctx); err != nil {
+		log.Errorw("Insecure Server forced to shutdown", "err", err)
+		return err
 	}
+	log.Infow("Server exiting")
+
 	return nil
 }
