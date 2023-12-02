@@ -7,6 +7,7 @@ import (
 	"evo-blog-gf/internal/middleware"
 	"evo-blog-gf/pkg/version"
 	"fmt"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -53,6 +54,7 @@ func run() error {
 	log.Infow(viper.GetString("db.username"))
 	gin.SetMode(viper.GetString("runMode"))
 	g := gin.New()
+	g.Use(cors.Default())
 	g.Use(middleware.RequestId())
 	g.NoRoute(func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"code": 10003, "message": "Page not found."})
